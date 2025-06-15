@@ -1,0 +1,6 @@
+[mysqld]
+sql_mode = 'NO_UNSIGNED_SUBTRACTION'
+max_allowed_packet = 16M
+
+[mysqldump]
+max_allowed_packet = 16M

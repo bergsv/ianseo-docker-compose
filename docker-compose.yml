@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  ianseo-app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: ianseo-app
+    ports:
+      - "8080:80"
+    volumes:
+      - ./config/apache2:/etc/apache2/conf-available
+      - ./config/php:/etc/php/8.3/apache2/conf.d
+    environment:
+      - MYSQL_HOST=ianseo-db
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-ianseo}
+      - MYSQL_USER=${MYSQL_USER:-ianseo}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-ianseo_password}
+    depends_on:
+      - ianseo-db
+    restart: unless-stopped
+    networks:
+      - ianseo-network
+
+  ianseo-db:
+    image: mysql:8.0
+    container_name: ianseo-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root_password}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-ianseo}
+      - MYSQL_USER=${MYSQL_USER:-ianseo}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-ianseo_password}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./config/mysql:/etc/mysql/conf.d
+    ports:
+      - "3306:3306"
+    restart: unless-stopped
+    command: --sql_mode='NO_UNSIGNED_SUBTRACTION' --max_allowed_packet=16M
+    networks:
+      - ianseo-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: ianseo-phpmyadmin
+    environment:
+      - PMA_HOST=ianseo-db
+      - PMA_USER=root
+      - PMA_PASSWORD=${MYSQL_ROOT_PASSWORD:-root_password}
+    ports:
+      - "8081:80"
+    depends_on:
+      - ianseo-db
+    restart: unless-stopped
+    networks:
+      - ianseo-network
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  ianseo-network:
+    driver: bridge
