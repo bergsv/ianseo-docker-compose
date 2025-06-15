@@ -281,17 +281,7 @@ docker-compose logs -f
 curl http://localhost:8080/health.php
 ```
 
-### Development Guidelines
-1. **🧪 Test all changes** in clean environment
-2. **📝 Update documentation** for new features
-3. **🔒 Follow security best practices**
-4. **📊 Include monitoring/logging** for new services
-
 ## 📄 License
 
 This Docker setup is provided under MIT License. 
 ianseo itself is subject to its own licensing terms - see [ianseo.net](https://ianseo.net/).
-
----
-
-**🏗️ Need enterprise hosting?** Check out our [Azure Container Instances setup](../aci-docker/) for scalable cloud deployment with automatic scaling and managed database services.
